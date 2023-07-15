@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" type="image" href="1.png">
+	<link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+	<script defer src="https://pyscript.net/alpha/pyscript.js"> </script>
+	<title>Pyscript Password Generator</title>
+</head>
+
+<body>
+	<div>Enter the length of password:</div>
+	<input type="text" id="input_len"/>
+	<button id="submit-button" type="submit" pys-onClick="main">Generate</button>
+	<div id="output"></div>
+
+	<py-script>
+		import secrets
+		import string
+		def pw_gen(len):
+			characters = string.ascii_letters + string.digits
+			secure_pw = ''.join(secrets.choice(characters) for i in range(len))
+			return secure_pw
+
+		def main(*args, **kwargs):
+			len = int(Element('input_len').element.value)
+			Element('output').element.innerText = pw_gen(len)  #pyscript.write('output',pw_gen(len))
+	</py-script>
+</body>
+
+</html>
