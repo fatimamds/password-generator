@@ -8,23 +8,95 @@
 	<title>Pyscript Password Generator</title>
 </head>
 
-<body>
-	<div>Enter the length of password:</div>
-	<input type="text" id="input_len"/>
-	<button id="submit-button" type="submit" pys-onClick="main">Generate</button>
-	<div id="output"></div>
+<!-- ----------------------------------------------------------- -->
+<body style="text-align:center;background-color:lightblue;">
+	<h1 style="margin:40px;font-weight:800;font-size:1.5rem;">Generate a Random Password</h1>
 
+	<!-- Letters, Numbers & Symbols checkbox -->
+	<input id="letters" type="checkbox" checked>
+	<label for="letters">Letters  </label>
+	<input id="numbers" type="checkbox" checked>
+	<label for="numbers">Numbers  </label>
+	<input id="symbols" type="checkbox" checked>
+	<label for="symbols">Symbols</label>
+
+	<!-- Slider to input password length -->
+	<div style="margin-top:25px;">Enter the length of password:</div>
+	<div>
+		<!-- <input type="text" id="input_len" value="15" style="margin-top:10px;padding: 5px 10px;"/> -->
+		<input type="range" id="input_len" value="15" min="3" max="50" oninput="this.nextElementSibling.value = this.value" style="margin:20px; padding: 5px 10px;"/>
+		<output>15</output>
+	</div>
+
+	<!-- Button to generate password -->
+	<button id="submit-button" type="submit" pys-onClick="main" style="color:white;background-color:black;border-radius:6px;padding:5px 10px;">Generate</button>
+
+	<!-- Display password & copy -->
+	<div id="output" onclick="copy(this)" title="Click to copy" style="color:white;background-color:black;font-weight:700;margin-left:145px;margin-right:145px;margin-top:30px;border-radius:6px;"></div>
+
+
+
+	<!-- ----------------------------------------------------------- -->
+	<script>
+		function copy(that){
+			var inp =document.createElement('input');
+			document.body.appendChild(inp)
+			inp.value =that.textContent
+			inp.select();
+			document.execCommand('copy',false);
+			inp.remove();
+		}
+	</script>
+
+
+
+	<!-- ----------------------------------------------------------- -->
 	<py-script>
 		import secrets
 		import string
+		from js import document
+
 		def pw_gen(len):
-			characters = string.ascii_letters + string.digits
-			secure_pw = ''.join(secrets.choice(characters) for i in range(len))
+			letters=document.querySelector("#letters").checked
+			numbers=document.querySelector("#numbers").checked
+			symbols=document.querySelector("#symbols").checked
+
+			if letters:
+				if numbers:
+					if symbols:
+						chars= string.ascii_letters + string.digits + string.punctuation
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+					else:
+						chars= string.ascii_letters + string.digits
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+				else:
+					if symbols:
+						chars= string.ascii_letters + string.punctuation
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+					else:
+						chars= string.ascii_letters
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+			else:
+				if numbers:
+					if symbols:
+						chars= string.digits + string.punctuation
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+					else:
+						chars= string.digits
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+				else:
+					if symbols:
+						chars= string.punctuation
+						secure_pw = ''.join(secrets.choice(chars) for i in range(len))
+					else:
+						secure_pw = ''
+
 			return secure_pw
+
 
 		def main(*args, **kwargs):
 			len = int(Element('input_len').element.value)
-			Element('output').element.innerText = pw_gen(len)  #pyscript.write('output',pw_gen(len))
+			Element('output').element.innerText = pw_gen(len) #pyscript.write('output',pw_gen(len))
 	</py-script>
 </body>
 
